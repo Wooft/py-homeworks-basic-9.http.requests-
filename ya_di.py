@@ -40,4 +40,13 @@ class YaUploader:
         self.token = token
 
     def upload(self, file_path: str):
-        
+        uurl = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
+        headers = ({'Content-Type': 'application/json', 'Authorization': 'OAuth {}'.format(self.token)})
+        params = {'path': ' ', 'overwrite': 'true'}
+        answer = requests.get(uurl, headers=headers, params=params)
+        pprint(answer.json())
+        url = answer.json().get("href", "")
+        response = requests.put(url, data=open(file_path, 'rb'))
+        response.raise_for_status()
+        if response.status_code == 201:
+            print('Загрузка прошла успешно!')
