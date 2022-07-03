@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 
 class YandexDisk:
@@ -18,6 +19,25 @@ class YandexDisk:
         response = requests.get(files_url, headers=headers)
         return response.json()
 
-    def up_file(self, file_path: str):
+    def get_upload_link(self, disk_file_path):
+        upload_url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'  # ссылка на загрузку
+        headers = self.get_headers()
+        params = {'path': disk_file_path, 'overwrite': 'true'}
+        response = requests.get(upload_url, headers=headers, params=params)
+        pprint(response.json())
+        return response.json()
 
+    def up_file(self, disk_file_path, filename):
+        response_href = self.get_upload_link(disk_file_path=disk_file_path)
+        url = response_href.get("href", "")
+        response = requests.put(url, data=open(filename, 'rb'))
+        response.raise_for_status()
+        if response.status_code == 201:
+            print('Загрузка прошла успешно!')
 
+class YaUploader:
+    def __init__(self, token: str):
+        self.token = token
+
+    def upload(self, file_path: str):
+        
