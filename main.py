@@ -1,7 +1,14 @@
 import requests
 from ya_di import YandexDisk
 from ya_di import YaUploader
+from stackapi import StackAPI
 from pprint import pprint
+from datetime import datetime, timedelta
+from datetime import timedelta
+from stackapi import StackAPI
+from time import time
+
+# Задача №1
 
 def get_hero_id():
     url = 'https://akabab.github.io/superhero-api/api/all.json'
@@ -29,8 +36,24 @@ def get_hero_maxint():
 
 pprint(f'Самый умный: {get_hero_maxint()}')
 
+# Задача №2
+
 if __name__ == '__main__':
     path_to_file = '/home/wooft/PycharmProjects/py-homeworks-basic_9.http.requests/1.jpg'
     TOKEN = "AQAAAAAFC3KFAADLW3RpNV5khk3NkfJZ2ZzJ80w"
     uploader = YaUploader(token=TOKEN)
     uploader.upload(path_to_file)
+
+# Задача №3
+def get_date():
+    cur_date = datetime.now()
+    return int(cur_date.strftime("%s"))
+
+def get_dby():
+    date = get_date()
+    d = datetime.today() - timedelta(days=2)
+    return int(d.strftime("%s"))
+
+SITE = StackAPI('stackoverflow')
+questions = SITE.fetch('questions', fromdate=get_dby(), todate=get_date(), tagged='python')
+pprint(questions)
